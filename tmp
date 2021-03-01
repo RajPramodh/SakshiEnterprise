@@ -1,0 +1,58 @@
+<table class="table table-bordered" aria-describedby="Application Contact Table">
+                <thead>
+                    <tr>
+                        <th id="table-header">
+                            <button type="button" class="btn btn-sm edit-btn" title="Bulk edit" *ngIf="showEditBtn"
+                                (click)="onBulkEdit()"><em class="fas fa-edit"></em></button>
+                        </th>
+                        <th scope="col">Application</th>
+                        <th scope="col">Program</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Program Owner</th>
+                        <th scope="col">BizOps Guild Lead</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="form-control custom-control-input" id="customCheck1"
+                                    (click)="onSelectAll($event.target.checked)" [value]="true" [(ngModel)]="temp"
+                                    [ngModelOptions]="{standalone: true}">
+                                <label class="custom-control-label" for="customCheck1"></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Application" class="filter-input"
+                                    formControlName="applicationName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Program" class="filter-input"
+                                    formControlName="programName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Service" class="filter-input"
+                                    formControlName="platformName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Program Owner" class="filter-input"
+                                    formControlName="programOwner" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="BizOps Guild Lead" class="filter-input"
+                                    formControlName="bizOpsOwner" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
