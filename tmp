@@ -1,4 +1,37 @@
-<table class="table table-bordered" aria-describedby="Application Contact Table">
+<div class="dxp-row" *ngIf="superAdmin&&renderTableTemplate">
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
+        <button type="button" class="btn btn-link add-link" (click)="onAddNewField()"><em class="far fa-plus"></em> Add
+            new field</button>
+    </div>
+</div>
+<div class="loader" *ngIf="isLoading"></div>
+<div class="dxp-row add-new-field-div" [ngClass]="{'show-new-field-form': showNewFieldForm}">
+    <pulse-new-field (closeAddNewFieldFormEvent)="closeFieldForm($event)">
+    </pulse-new-field>
+</div>
+<div class="dxp-row" *ngIf="renderTableTemplate">
+    <div
+        class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center pagination-div">
+        <button type="button" title="Export as excel" class="btn btn-link add-link" style="font-size: 1.1rem;" (click)="downloadExcel()"><em
+            class="fas fa-download"></em></button>
+        <button *ngFor="let page of alphaPageList" class="btn btn-sm pagination-btn"
+            [ngClass]="{'selected': page.selected === true}" value="{{page.value}}"
+            (click)="filterPageByAlpha($event,page);">{{page.label}}</button>
+        
+    </div>
+
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
+        <div class="edit-application-info" *ngIf="showEditApplnInfo" [@slideInOut]>
+            <button class="btn btn-sm close-btn" type="button" (click)="closeEditApplnInfo()">
+                <em class="fas fa-times"></em>
+            </button>
+            <h3 class="edit-title">Bulk Edit</h3>
+            <pulse-edit-info [selectedRows]="selectedRows" [contactFieldList]="contactFieldList"
+            (closeBulkEditForm)=closeEditApplnInfo($event)></pulse-edit-info>
+        </div>
+        <form [formGroup]="searchForm">
+
+            <table class="table table-bordered" aria-describedby="Application Contact Table">
                 <thead>
                     <tr>
                         <th id="table-header">
@@ -56,3 +89,17 @@
 
                     </tr>
                 </tbody>
+                <tbody pulse-contact-table-rows [applicationContactTablelist]="displayApplicationContactTablelist"
+                    [contactFieldList]="contactFieldList" (rowSelected)="onSelectRow($event)"
+                    (rowUnSelected)="onUnSelectRow($event)" (onSelectAppln)="closeEditApplnInfo()"></tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="pagination-row dxp-row" *ngIf="renderTableTemplate">
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center">
+        <dxp-pagination page-size="10" [attr.total-units]="totalUnits" hide-when-single-page="false" position="center"
+            (toPageNumber)="onChangePage($event)" display-text="Displaying">
+        </dxp-pagination>
+    </div>
+</div>
