@@ -1,0 +1,120 @@
+import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { environment } from 'src/environments/environment';
+import { v4 as uuid } from 'uuid';
+import { ApiCallService } from './api-call.service';
+import { CommunicationService } from './communication.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UtilityService {
+
+  constructor(private readonly communicationService:CommunicationService) { }
+
+  makeFavouriteCall(payload: object) {
+    ApiCallService.instance.postData(environment.pulseUrl + environment.favoriteUrl, payload).subscribe(
+      (data: any) => {
+      },
+      (error) => {
+        console.log(error);
+      })
+  }
+
+  makeUnfavouriteCall(payload: object) {
+    const correlationID = uuid.v4();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'X-Emp-Id': payload["empId"],
+        'X-Favorite-Id': payload["favoriteId"],
+        'X-Favorite-Type': payload["favoriteType"].toString(),
+        'X-MC-Correlation-ID': correlationID,
+      }),
+    };
+    ApiCallService.instance.deleteData(environment.pulseUrl + environment.favoriteUrl, httpOptions).subscribe(
+      (data: any) => {
+        if(payload["favoriteType"]===1){
+          this.communicationService.raisEventApplicationDataUpdate('update');
+        }
+        else{
+          this.communicationService.raisEventPlatformDataUpdate('update');
+        }
+      },
+      (error) => {
+        console.log(error);
+      })
+  }
+
+  makeNotificationCall(payloadList: any[]) {
+    ApiCallService.instance.putData(environment.pulseUrl + environment.applicationUrl, payloadList).subscribe(
+      (data: any) => {
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  getDropdownList(key: string, dependentKey: string) {
+    return new Promise((resolve) => {
+      const correlationID = uuid.v4();
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'X-Key': key,
+          'X-Dependent-Key': dependentKey,
+          'X-MC-Correlation-ID': correlationID,
+        }),
+      };
+      ApiCallService.instance.getData(environment.pulseUrl + environment.dropdownUrl, httpOptions).subscribe(
+        (data: any) => {
+          if (data) {
+            resolve(data.responseData);
+          }
+        },
+        (error) => {
+          console.log("Failed");
+          resolve(error);
+        }
+      );
+    });
+  }
+
+  searchFilter(items: any[], searchText: string, searchField: string): any[] {
+    if (!items) {
+      return [];
+    }
+    if (!searchText) {
+      return items;
+    }
+    searchText = searchText.toLowerCase();
+    return items.filter(it => {
+      var res;
+      if (it[searchField] !== null && it[searchField] !== "null") {
+        res = (it[searchField]).toLowerCase().includes(searchText);
+      }
+      return res;
+    });
+  }
+
+  filterTableData(items: any[], searchForm: FormGroup, fieldList: string[]) {
+    var result = items;
+    for (var [i] of fieldList.entries()) {
+      result = this.searchFilter(result, searchForm.value[fieldList[i]], fieldList[i]);
+    }
+    return result;
+  }
+
+  filterByLetter(array: any[], letter: string, field: string) {
+    if (!array) {
+      return [];
+    }
+    if (!letter) {
+      return array;
+    }
+    return array.filter(it => {
+      const firstLetter = (it[field]).charAt(0).toLowerCase()
+      return firstLetter === letter.toLowerCase();
+    });
+  }
+}
