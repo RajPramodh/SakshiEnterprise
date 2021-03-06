@@ -1,47 +1,14 @@
-.edit-info-div{
-    max-height:24rem;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-.close-btn{
-    float: right;
-    background: transparent;
-    color: #d7373c;
-    height: 22px;
-}
-.close-btn:hover,.close-btn:focus,.close-btn:active{
-    background-color: transparent !important;
-}
-.add-link{
-    background-color: #ffff;
-    color: #cf4500;
-    font-weight: 600;
-}
-.add-link:hover, .add-link:active,.add-link:focus{
-    background-color: #ffff !important;
-    color: #cf4500 !important;
-}
-.add-link:hover{
-    text-decoration: underline;
-}
-.form-group{
-    margin: 0px;
-}
-.card{
-    margin: 0.75rem;
-}
-.save-btn{
-    color: #ffff;
-    padding: .15rem 2.5rem;
-    height: 28px;
-}
-.info-form-title{
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #141413;
-}
 .error-msg{
     color: #D7373C;
     font-size: 12px;
     font-weight: 600;
+}
+.red-border{
+    border: 1px solid #D7373C !important;
+}
+.form-group{
+    margin: 0px;
+}
+.dxp-row > div{
+    padding:0px;
 }
