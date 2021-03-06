@@ -1,105 +1,153 @@
-<div class="dxp-row" *ngIf="superAdmin&&renderTableTemplate">
-    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
-        <button type="button" class="btn btn-link add-link" (click)="onAddNewField()"><em class="far fa-plus"></em> Add
-            new field</button>
-    </div>
-</div>
-<div class="loader" *ngIf="isLoading"></div>
-<div class="dxp-row add-new-field-div" [ngClass]="{'show-new-field-form': showNewFieldForm}">
-    <pulse-new-field (closeAddNewFieldFormEvent)="closeFieldForm($event)">
-    </pulse-new-field>
-</div>
-<div class="dxp-row" *ngIf="renderTableTemplate">
-    <div
-        class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center pagination-div">
-        <button type="button" title="Export as excel" class="btn btn-link add-link" style="font-size: 1.1rem;" (click)="downloadExcel()"><em
-            class="fas fa-download"></em></button>
-        <button *ngFor="let page of alphaPageList" class="btn btn-sm pagination-btn"
-            [ngClass]="{'selected': page.selected === true}" value="{{page.value}}"
-            (click)="filterPageByAlpha($event,page);">{{page.label}}</button>
-        
-    </div>
+import { HttpHeaders } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApplicationContactTable, ContactField } from 'src/app/core/services/model.service';
+import { environment } from 'src/environments/environment';
+import { v4 as uuid } from 'uuid';
+import { ApiCallService } from 'src/app/core/services/api-call.service';
+import { DataSharingService } from 'src/app/core/services/data-sharing.service';
+import { NotificationService } from 'src/app/shared/notification/notification.service';
+import { NotificationConstants } from 'src/app/shared/notification/notification.constants';
 
-    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
-        <div class="edit-application-info" *ngIf="showEditApplnInfo" [@slideInOut]>
-            <button class="btn btn-sm close-btn" type="button" (click)="closeEditApplnInfo()">
-                <em class="fas fa-times"></em>
-            </button>
-            <h3 class="edit-title">Bulk Edit</h3>
-            <pulse-edit-info [selectedRows]="selectedRows" [contactFieldList]="contactFieldList"
-            (closeBulkEditForm)=closeEditApplnInfo($event)></pulse-edit-info>
-        </div>
-        <form [formGroup]="searchForm">
+@Component({
+  selector: 'pulse-edit-info',
+  templateUrl: './edit-info.component.html',
+  styleUrls: ['./edit-info.component.css']
+})
+export class EditInfoComponent implements OnInit {
 
-            <table class="table table-bordered" aria-describedby="Application Contact Table">
-                <thead>
-                    <tr>
-                        <th id="table-header">
-                            <button type="button" class="btn btn-sm edit-btn" title="Bulk edit" *ngIf="showEditBtn"
-                                (click)="onBulkEdit()"><em class="fas fa-edit"></em></button>
-                        </th>
-                        <th scope="col">Application</th>
-                        <th scope="col">Program</th>
-                        <th scope="col">Service</th>
-                        <th scope="col">Program Owner</th>
-                        <th scope="col">BizOps Guild Lead</th>
-                    </tr>
-                </thead>
+  @Input() selectedRows: ApplicationContactTable[] = [];
+  @Input() contactFieldList: ContactField[] = [];
 
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="form-control custom-control-input" id="customCheck1"
-                                    (click)="onSelectAll($event.target.checked)" [value]="true" [(ngModel)]="temp"
-                                    [ngModelOptions]="{standalone: true}">
-                                <label class="custom-control-label" for="customCheck1"></label>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" placeholder="Application" class="filter-input"
-                                    formControlName="applicationName" (input)="onFilterChange()" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" placeholder="Program" class="filter-input"
-                                    formControlName="programName" (input)="onFilterChange()" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" placeholder="Service" class="filter-input"
-                                    formControlName="platformName" (input)="onFilterChange()" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" placeholder="Program Owner" class="filter-input"
-                                    formControlName="programOwner" (input)="onFilterChange()" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" placeholder="BizOps Guild Lead" class="filter-input"
-                                    formControlName="bizOpsOwner" (input)="onFilterChange()" />
-                            </div>
-                        </td>
+  @Output() closeBulkEditForm = new EventEmitter<boolean>();
 
-                    </tr>
-                </tbody>
-                <tbody pulse-contact-table-rows [applicationContactTablelist]="displayApplicationContactTablelist"
-                    [contactFieldList]="contactFieldList" (rowSelected)="onSelectRow($event)"
-                    (rowUnSelected)="onUnSelectRow($event)" (onSelectAppln)="closeEditApplnInfo()"></tbody>
-            </table>
-        </form>
-    </div>
-</div>
-<div class="pagination-row dxp-row" *ngIf="renderTableTemplate">
-    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center">
-        <dxp-pagination page-size="10" [attr.total-units]="totalUnits" hide-when-single-page="false" position="center"
-            (toPageNumber)="onChangePage($event)" display-text="Displaying">
-        </dxp-pagination>
-    </div>
-</div>
+  selectedRowsData: ApplicationContactTable[] = [];
+  contactFieldListData: ContactField[] = [];
+
+  editForm: FormGroup;
+  arrayControl: FormArray;
+  showErrorMsg = false;
+
+  constructor(private readonly formBuilder: FormBuilder, private readonly apiCallService: ApiCallService,
+    private readonly dataSharingService: DataSharingService, private readonly notificationService: NotificationService) {
+    var newForm = this.formBuilder.group({
+      formArray: this.formBuilder.array([])
+    });
+    this.editForm = newForm;
+    this.arrayControl = this.editForm.controls['formArray'] as FormArray;
+  }
+
+  ngOnInit(): void {
+  }
+
+  ngOnChanges() {
+    this.selectedRowsData = this.selectedRows;
+    this.contactFieldListData = this.contactFieldList;
+  }
+
+  addInput(): void {
+    var newGroup = this.formBuilder.group({
+      categories: [''],
+      employeeId: ['', Validators.maxLength(7)],
+      employeeName: [''],
+      empPhone: [''],
+      empWork: [''],
+      empHome: [''],
+      empEmail: [''],
+      empRole: [''],
+      errorCount: 0,
+    });
+    this.arrayControl.push(newGroup);
+  }
+
+  delInput(index: number): void {
+    this.arrayControl.removeAt(index);
+  }
+
+  onSubmit() {
+    var payloadList = [];
+    let errorCount = 0;
+    for (var [j] of this.selectedRowsData.entries()) {
+      for (var [i] of this.editForm.value.formArray.entries()) {
+        if (this.editForm.value.formArray[i].employeeId !== null && this.editForm.value.formArray[i].employeeId
+          !== "" && this.editForm.value.formArray[i].employeeId !== undefined) {
+          var payload = new Object();
+          payload["appId"] = this.selectedRowsData[j].id;
+          payload["fieldId"] = this.editForm.value.formArray[i].categories.fieldId;
+          payload["fieldValue"] = this.editForm.value.formArray[i].employeeId;
+          payload["empId"] = this.dataSharingService.empId;
+          errorCount = errorCount + this.editForm.value.formArray[i].errorCount;
+          payloadList.push(payload);
+        }
+        else if(this.editForm.value.formArray[i].empEmail !== null && this.editForm.value.formArray[i].empEmail
+          !== "" && this.editForm.value.formArray[i].empEmail !== undefined){
+            errorCount = errorCount + this.editForm.value.formArray[i].errorCount;
+        }
+      }
+    }
+    if (errorCount === 0) {
+      this.showErrorMsg = false;
+      this.callEmployeeUpdate();
+      const correlationID = uuid.v4();
+
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'X-MC-Correlation-ID': correlationID,
+        }),
+      };
+      this.apiCallService.putData(environment.pulseUrl + environment.contactUrl, payloadList, httpOptions).subscribe(
+        (data: any) => {
+          if (data.success) {
+            this.notificationService.open(NotificationConstants.NOTIFICATION_SUCCESS, "Application/s data updated succesfully!", 'Success', true, 5000);
+          }
+          else {
+            this.notificationService.open(NotificationConstants.NOTIFICATION_ERROR, 'Failed to update application/s data!', 'Error', true, 5000);
+          }
+          this.closeBulkEditForm.emit(false);
+        },
+        (error) => {
+          console.log("failed");
+          this.notificationService.open(NotificationConstants.NOTIFICATION_ERROR, 'Failed to update application/s data! Try again later.', 'Error', true, 5000);
+          this.closeBulkEditForm.emit(false);
+        });
+    }
+    else {
+      this.showErrorMsg = true;
+    }
+  }
+
+  callEmployeeUpdate() {
+    let employeePayloadList = [];
+    for (var [k] of this.editForm.value.formArray.entries()) {
+      if (this.editForm.value.formArray[k].employeeId !== null && this.editForm.value.formArray[k].employeeId
+        !== "" && this.editForm.value.formArray[k].employeeId !== undefined && this.editForm.value.formArray[k].empEmail !== null && this.editForm.value.formArray[k].empEmail
+        !== "" && this.editForm.value.formArray[k].empEmail !== undefined) {
+        var payload1 = new Object();
+        payload1["empId"] = this.editForm.value.formArray[k].employeeId;
+        payload1["empName"] = this.editForm.value.formArray[k].employeeName;
+        payload1["empRole"] = this.editForm.value.formArray[k].empRole;
+        payload1["empEmail"] = this.editForm.value.formArray[k].empEmail;
+        payload1["empPhone"] = this.editForm.value.formArray[k].empWork;
+        payload1["empMobile"] = this.editForm.value.formArray[k].empHome;
+        payload1["userId"] = this.dataSharingService.empId;
+        employeePayloadList.push(payload1);
+      }
+    }
+    this.updateEmpDetails(employeePayloadList);
+  }
+
+  updateEmpDetails(payloadList: any) {
+    const correlationID = uuid.v4();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'X-MC-Correlation-ID': correlationID,
+      }),
+    };
+    this.apiCallService.putData(environment.pulseUrl + environment.fieldUrl, payloadList, httpOptions).subscribe(
+      (data: any) => {
+      },
+      (error) => {
+        console.log("failed");
+      });
+  }
+}
