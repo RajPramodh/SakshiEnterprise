@@ -1,14 +1,66 @@
-.error-msg{
-    color: #D7373C;
-    font-size: 12px;
-    font-weight: 600;
-}
-.red-border{
-    border: 1px solid #D7373C !important;
-}
-.form-group{
-    margin: 0px;
-}
-.dxp-row > div{
-    padding:0px;
-}
+<form [formGroup]="infoForm">
+    <div class="dxp-row">
+        <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 zeroPadding">
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4">
+                <div class="form-group">
+                    <label class="control-label">Field</label>
+                    <ngx-select-dropdown [options]="contactFieldList" (change)="onSelectCategory($event)" [config]="{
+              displayKey: 'fieldName',
+              search: true,
+              searchOnKey: 'fieldName',
+              placeholder:'Select Field'}" style="height: 32px;" formControlName="categories"></ngx-select-dropdown>
+                </div>
+            </div>
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4"
+                *ngIf="showGroupNameField">
+                <div class="form-group">
+                    <label class="control-label">Group Name</label>
+                    <input type="text" style="height: 32px;" [ngClass]="{
+              'red-border':showErrorMsg==true}" (input)="validateGroupName($event.target.value)"
+                        formControlName="employeeId" />
+                    <div *ngIf="showErrorMsg" class="error-msg">Enter valid group name</div>
+                </div>
+            </div>
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4"
+                *ngIf="showContactField">
+                <div class="form-group">
+                    <label class="control-label">Email Id</label>
+                    <input type="text" style="height: 32px;" [ngClass]="{
+              'red-border':showErrorMsg==true}" (input)="fetchEmployeeDetails($event.target.value)"
+                        formControlName="empEmail" />
+                    <div *ngIf="showErrorMsg" class="error-msg">Enter valid Id</div>
+                </div>
+            </div>
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4"
+                *ngIf="showContactField">
+                <div class="form-group">
+                    <label class="control-label">Name</label>
+                    <input type="text" style="height: 32px;" formControlName="employeeName" disabled />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dxp-row" *ngIf="showContactField">
+        <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 zeroPadding">
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4 zeroPadding">
+                <div class="form-group">
+                    <label class="control-label">Role</label>
+                    <input type="text" style="height: 32px;" formControlName="empRole" disabled />
+                </div>
+            </div>
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4">
+                <div class="form-group">
+                    <label class="control-label">Work</label>
+                    <input type="text" style="height: 32px;" formControlName="empWork" disabled />
+                </div>
+            </div>
+            <div class="dxp-col-4 dxp-col-sm-6 dxp-col-md-4 dxp-col-lg-4 dxp-col-xl-4 dxp-col-xxl-4">
+                <div class="form-group">
+                    <label class="control-label">Home</label>
+                    <input type="text" style="height: 32px;" formControlName="empHome" disabled />
+                    <input type="hidden" style="height: 32px;" formControlName="empPhone" disabled />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
