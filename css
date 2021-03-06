@@ -1,0 +1,128 @@
+:host ::ng-deep dxp-pagination .dxp-theme-white.dxp-pagination.pagination{
+    font-size: 00.8rem;
+    font-weight: 600;
+}
+th,td{
+    text-align: left !important;
+}
+.form-group{
+    margin: 0px;
+}
+.filter-input{
+    height: 30px;
+    font-size: 0.8rem;
+}
+.edit-btn,.delete-btn{
+    background-color: #fff;
+    padding: 0px;
+    font-size: 15px;
+}
+.edit-btn{
+    color:#F38B00;
+    margin-right: 10px;
+}
+.delete-btn{
+    color: #d7373c;
+}
+.delete-btn:hover,.delete-btn:focus,.delete-btn:active,
+.edit-btn:hover,.edit-btn:active,.edit-btn:focus{
+    background-color: #ffff !important;
+}
+
+.pagination-btn {
+    background: #fff;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0px !important;
+    padding: 0.5rem 0.85rem;
+    border-right: 0px !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.pagination-btn:hover,.selected{
+    background-color: #cf4500;
+    color: #fff;
+}
+.pagination-div{
+    margin: 1rem 0rem;
+}
+.pagination-div button:last-child{
+    border-right: 1px solid #dee2e6 !important;
+}
+
+/* edit info */
+    .edit-application-info{
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        display: block;
+        padding: 1.5rem;
+        padding-right: 0.75rem;
+        background: #fff;
+        width: 72%;
+        left: 15%;
+        border-radius: 2px;
+        box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+    }
+    .close-btn{
+        float: right;
+        padding: 8px 12px;
+        background: #F3F0EE;
+        color: #d7373c;
+        font-size: 15px;
+    }
+    .close-btn:hover,.close-btn:focus,.close-btn:active{
+        background-color: #ffff !important;
+    }
+    .edit-title{
+        font-size: 1.45rem;
+        font-weight: 600;
+        color: #141413;
+        margin-left: 0.75rem;
+        margin-bottom: 1rem;
+    }
+/* edit info */
+/* new field */
+    .add-link{
+        background-color: #ffff;
+        color: #cf4500;
+        font-weight: 600;
+        float: right;
+    }
+    .add-link:hover, .add-link:active,.add-link:focus{
+        background-color: #ffff !important;
+        color: #cf4500 !important;
+    }
+    .add-link:hover{
+        text-decoration: underline;
+    }
+    .add-new-field-div{
+        transition: 0.4s;
+        max-height: 0px ;
+        opacity: 0;
+    }
+    .show-new-field-form{
+        max-height: 10rem ;
+        opacity: 1;
+    }
+    pulse-new-field{
+        width: 100%;
+        padding: 1rem 1rem 0rem 0rem;
+        margin: 0rem 1rem 2rem 1rem;
+        background: #F3F0EE;
+        border-radius: 4px;
+    }
+/* new field */
+.loader {
+    position:fixed;
+    top:45%;
+    right:0;
+    bottom:0;
+    left:50%;
+    width:100%;
+    height:100%;
+    z-index:1070;
+    transform:translate3d(-50%,-50%,0);
+    background: transparent url("../../../../../assets/images/loading.gif") no-repeat center center;
+    background-color: transparent;
+}
+ 
