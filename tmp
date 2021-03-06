@@ -1,50 +1,105 @@
+<div class="dxp-row" *ngIf="superAdmin&&renderTableTemplate">
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
+        <button type="button" class="btn btn-link add-link" (click)="onAddNewField()"><em class="far fa-plus"></em> Add
+            new field</button>
+    </div>
+</div>
+<div class="loader" *ngIf="isLoading"></div>
+<div class="dxp-row add-new-field-div" [ngClass]="{'show-new-field-form': showNewFieldForm}">
+    <pulse-new-field (closeAddNewFieldFormEvent)="closeFieldForm($event)">
+    </pulse-new-field>
+</div>
+<div class="dxp-row" *ngIf="renderTableTemplate">
+    <div
+        class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center pagination-div">
+        <button type="button" title="Export as excel" class="btn btn-link add-link" style="font-size: 1.1rem;" (click)="downloadExcel()"><em
+            class="fas fa-download"></em></button>
+        <button *ngFor="let page of alphaPageList" class="btn btn-sm pagination-btn"
+            [ngClass]="{'selected': page.selected === true}" value="{{page.value}}"
+            (click)="filterPageByAlpha($event,page);">{{page.label}}</button>
+        
+    </div>
 
-<tr *ngFor="let item of data">
-    <td>
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="form-control custom-control-input" [id]="item.id"
-                (click)="onSelectRow(item, $event.target.checked)" [checked]="item.isSelected">
-            <label class="custom-control-label" [for]="item.id"></label>
-        </div>
-    </td>
-    <td>
-        <button type="button" class="btn btn-sm application-btn" name="applicationName"
-            (click)="onSelectApplication(item)">{{item.applicationName}}
-        </button>
-    </td>
-    <td>{{item.programName}}
-        <div class="application-info" *ngIf="item.showApplnInfo" [@slideInOut]>
-            <button class="btn btn-sm close-btn" type="button" (click)="closeApplnInfo(item)">
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
+        <div class="edit-application-info" *ngIf="showEditApplnInfo" [@slideInOut]>
+            <button class="btn btn-sm close-btn" type="button" (click)="closeEditApplnInfo()">
                 <em class="fas fa-times"></em>
             </button>
-            <button type="button" *ngIf="!item.enableEditForm" class="btn btn-sm edit-btn"
-                (click)="onEditApplicationContactInfo(item)">
-                Edit
-            </button>
-             <button title="Save" type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
-                (click)="onCancelEdit(item)">
-               Cancel 
-            </button>
-            <button type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
-                (click)="onSubmitApplicationContactInfo(item)">
-                Save
-            </button>
-
-            <h3 class="appln-title">{{item.applicationName}}</h3>
-            <div class="row" *ngIf="infoFormErrorMsg">
-                <div class="col-md-12">
-                  <span class="info-error">Please check and enter valid details before saving</span>
-                </div>
-            </div>
-            <div class="last-update"><span style="font-weight: 600;">Last Updated:</span>
-                {{item.lstUpdtDttm}} <strong>by</strong> {{item.lstUpdtUserId}} </div>
-
-            <pulse-contact-info [applicationRow]="item" [applicationDetails]="item.applicationDetails"
-                [contactFieldList]="contactFieldList" (submitInfo)="onSelectApplication($event)" (showError)="onShowErrorMessage($event)">
-            </pulse-contact-info>
+            <h3 class="edit-title">Bulk Edit</h3>
+            <pulse-edit-info [selectedRows]="selectedRows" [contactFieldList]="contactFieldList"
+            (closeBulkEditForm)=closeEditApplnInfo($event)></pulse-edit-info>
         </div>
-    </td>
-    <td>{{item.platformName}}</td>
-    <td>{{item.programOwner}}</td>
-    <td>{{item.bizOpsOwner}}</td>
-</tr>
+        <form [formGroup]="searchForm">
+
+            <table class="table table-bordered" aria-describedby="Application Contact Table">
+                <thead>
+                    <tr>
+                        <th id="table-header">
+                            <button type="button" class="btn btn-sm edit-btn" title="Bulk edit" *ngIf="showEditBtn"
+                                (click)="onBulkEdit()"><em class="fas fa-edit"></em></button>
+                        </th>
+                        <th scope="col">Application</th>
+                        <th scope="col">Program</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Program Owner</th>
+                        <th scope="col">BizOps Guild Lead</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="form-control custom-control-input" id="customCheck1"
+                                    (click)="onSelectAll($event.target.checked)" [value]="true" [(ngModel)]="temp"
+                                    [ngModelOptions]="{standalone: true}">
+                                <label class="custom-control-label" for="customCheck1"></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Application" class="filter-input"
+                                    formControlName="applicationName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Program" class="filter-input"
+                                    formControlName="programName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Service" class="filter-input"
+                                    formControlName="platformName" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="Program Owner" class="filter-input"
+                                    formControlName="programOwner" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" placeholder="BizOps Guild Lead" class="filter-input"
+                                    formControlName="bizOpsOwner" (input)="onFilterChange()" />
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+                <tbody pulse-contact-table-rows [applicationContactTablelist]="displayApplicationContactTablelist"
+                    [contactFieldList]="contactFieldList" (rowSelected)="onSelectRow($event)"
+                    (rowUnSelected)="onUnSelectRow($event)" (onSelectAppln)="closeEditApplnInfo()"></tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="pagination-row dxp-row" *ngIf="renderTableTemplate">
+    <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center">
+        <dxp-pagination page-size="10" [attr.total-units]="totalUnits" hide-when-single-page="false" position="center"
+            (toPageNumber)="onChangePage($event)" display-text="Displaying">
+        </dxp-pagination>
+    </div>
+</div>
