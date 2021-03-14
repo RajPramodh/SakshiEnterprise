@@ -1,136 +1,73 @@
-import { HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ContactField } from 'src/app/core/services/model.service';
-import { environment } from 'src/environments/environment';
-import { v4 as uuid } from 'uuid';
-import { ApiCallService } from 'src/app/core/services/api-call.service';
-import { ContactService } from '../../../contact.service';
-
-@Component({
-  selector: 'pulse-info-form',
-  templateUrl: './info-form.component.html',
-  styleUrls: ['./info-form.component.css']
-})
-export class InfoFormComponent implements OnInit {
-
-  @Input() editForm: FormGroup;
-  @Input() contactFieldList: ContactField[] = [];
-
-  infoForm: FormGroup;
-  showErrorMsg = false;
-  showGroupNameField = false;
-  showContactField = false;
-
-  constructor(private readonly apiCallService:ApiCallService) { }
-
-  ngOnInit(): void {
-      this.infoForm = this.editForm;
-  }
-
-  onSelectCategory(event: any) {
-    if (event.value.fieldType === "RG") {
-      this.showGroupNameField = true;
-      this.showContactField = false;
-    }
-    else {
-      this.showGroupNameField = false;
-      this.showContactField = true;
-    }
-  }
-
-  _employeeTimeout: any = null;
-  fetchEmployeeDetails(employeeId: string) {
-    if (this._employeeTimeout) {
-      window.clearTimeout(this._employeeTimeout);
-    }
-    this._employeeTimeout = window.setTimeout(() => {
-      this._employeeTimeout = null;
-      if (employeeId.includes("@mastercard.com")) {
-        const correlationID = uuid.v4();
-
-        const httpOptions = {
-          headers: new HttpHeaders({
-            'X-MC-Correlation-ID': correlationID,
-            'x-email-id': employeeId
-          }),
-        };
-        this.apiCallService.getData(environment.outboundUrl + environment.employeeUrl, httpOptions).subscribe(
-          (data: any) => {
-            if (data === null) {
-              this.showErrorMsg = true;
-              this.infoForm.patchValue({
-                employeeName: '',
-                empPhone: '',
-                empRole: '',
-                empWork: '',
-                empHome: '',
-                employeeId: '',
-                errorCount: 1,
-              });
-              this.infoForm.controls.empWork.disable();
-              this.infoForm.controls.employeeName.disable();
-              this.infoForm.controls.empHome.disable();
-              this.infoForm.controls.empRole.disable();
-            }
-            else {
-              this.showErrorMsg = false;
-              this.infoForm.patchValue({
-                employeeName: data.empName,
-                empPhone: `${data.businessNum};${data.phoneNum}`,
-                empWork: data.businessNum,
-                empHome: data.phoneNum,
-                empRole: data.jobTitle,
-                employeeId: data.empId,
-                errorCount: 0,
-              });
-              this.infoForm.controls.empWork.enable();
-              this.infoForm.controls.empHome.enable();
-              this.infoForm.controls.empRole.enable();
-              this.infoForm.controls.employeeName.enable();
-            }
-          },
-          (error) => {
-            console.log("failed");
-          });
-      }
-      else {
-        this.showErrorMsg = false;
-        this.infoForm.patchValue({
-          employeeName: '',
-          empPhone: '',
-          empRole: '',
-          empWork: '',
-          empHome: '',
-          employeeId: '',
-          errorCount: 0,
-        });
-        this.infoForm.controls.empWork.disable();
-        this.infoForm.controls.empHome.disable();
-        this.infoForm.controls.empRole.disable();
-        this.infoForm.controls.employeeName.disable();
-      }
-    }, 1000);
-  }
-
-  _timeout: any = null;
-  validateGroupName(groupName: string) {
-    if (this.infoForm.value.categories.fieldName !== "Remedy PRT Support Group" && this.infoForm.value.categories.fieldName !== "Remedy TRT support group") {
-      if (this._timeout) {
-        window.clearTimeout(this._timeout);
-      }
-      this._timeout = window.setTimeout(() => {
-        this._timeout = null;
-        ContactService.validateRemedyGroup(groupName).then((value: boolean) => {
-          this.showErrorMsg = value;
-          if (value) {
-            this.infoForm.value.errorCount = 1;
-          }
-          else {
-            this.infoForm.value.errorCount = 0;
-          }
-        });
-      }, 1000);
-    }
-  }
+td{
+    text-align: left !important;
 }
+td:first-child + td{
+    width: 22% !important; 
+    text-align: left !important;
+}
+.application-btn {
+    background: #ffff;
+    padding: 0px;
+    font-size: 0.8rem !important;
+    height: auto!important;
+    font-weight: 600;
+    word-break: break-word;
+    color: #cf4500;
+    white-space: pre-wrap;
+    text-align: left;
+}
+.application-btn:hover,.application-btn:focus,.application-btn:active{
+    background-color: #ffff !important;
+    text-decoration: underline;
+}
+/* application info */
+    .application-info,.edit-application-info{
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        display: block;
+        padding: 1rem;
+        padding-right: 0.75rem;
+        background: #fff;
+        width: 75%;
+        border-radius: 2px;
+        margin-left: -16px;
+        box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+    }
+    .close-btn,.edit-btn,.save-btn{
+        float: right;
+        padding: 8px 12px;
+        background: #F3F0EE;
+        color: #d7373c;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+    .edit-btn,.save-btn{
+        background-color:#fff ;
+        color: #CF4500;
+    }
+    .close-btn:hover,.close-btn:focus,.close-btn:active,
+    .edit-btn:hover,.edit-btn:focus,.edit-btn:active,
+    .save-btn:hover,.save-btn:focus,.save-btn:active{
+        background-color: #ffff !important;
+        text-decoration: underline;
+    }
+    .appln-title{
+        font-size: 1.45rem;
+        font-weight: 600;
+        margin-bottom: 0rem;
+        color: #141413;
+        margin-left: 0.75rem;
+    }
+    .last-update{
+        float: right;
+    }
+    .info-error{
+        float: right;
+        margin-bottom: 1rem;
+        margin-right: 2rem;
+        color: #d7373c;
+        font-size: 13px;
+        font-weight: 600;
+    }
+/* application info */
