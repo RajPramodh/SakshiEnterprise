@@ -1,40 +1,50 @@
-<div class="edit-info-div">
-    <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-        <div class="dxp-row">
-            <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
-                <div formArrayName="formArray">
-                    <div class="card" *ngFor="let control of editForm.get('formArray')['controls']; let i = index">
-                        <div class="card-header">
-                            <span class="info-form-title">Application Info</span>
-                            <button class="btn btn-sm close-btn" type="button" (click)="delInput(i)">
-                                <em class="fas fa-times"></em>
-                            </button>
-                        </div>
 
-                        <div class="card-body">
-                            <pulse-info-form [editForm]="editForm.controls.formArray.controls[i]"
-                                [contactFieldList]="contactFieldListData"></pulse-info-form>
-                        </div>
-                    </div>
+<tr *ngFor="let item of data">
+    <td>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="form-control custom-control-input" [id]="item.id"
+                (click)="onSelectRow(item, $event.target.checked)" [checked]="item.isSelected">
+            <label class="custom-control-label" [for]="item.id"></label>
+        </div>
+    </td>
+    <td>
+        <button type="button" class="btn btn-sm application-btn" name="applicationName"
+            (click)="onSelectApplication(item)">{{item.applicationName}}
+        </button>
+    </td>
+    <td>{{item.programName}}
+        <div class="application-info" *ngIf="item.showApplnInfo" [@slideInOut]>
+            <button class="btn btn-sm close-btn" type="button" (click)="closeApplnInfo(item)">
+                <em class="fas fa-times"></em>
+            </button>
+            <button type="button" *ngIf="!item.enableEditForm" class="btn btn-sm edit-btn"
+                (click)="onEditApplicationContactInfo(item)">
+                Edit
+            </button>
+             <button title="Save" type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
+                (click)="onCancelEdit(item)">
+               Cancel 
+            </button>
+            <button type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
+                (click)="onSubmitApplicationContactInfo(item)">
+                Save
+            </button>
+
+            <h3 class="appln-title">{{item.applicationName}}</h3>
+            <div class="row" *ngIf="infoFormErrorMsg">
+                <div class="col-md-12">
+                  <span class="info-error">Please check and enter valid details before saving</span>
                 </div>
             </div>
+            <div class="last-update"><span style="font-weight: 600;">Last Updated:</span>
+                {{item.lstUpdtDttm}} <strong>by</strong> {{item.lstUpdtUserId}} </div>
+
+            <pulse-contact-info [applicationRow]="item" [applicationDetails]="item.applicationDetails"
+                [contactFieldList]="contactFieldList" (submitInfo)="onSelectApplication($event)" (showError)="onShowErrorMessage($event)">
+            </pulse-contact-info>
         </div>
-        <div class="dxp-row">
-            <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12">
-                <div class="form-group">
-                    <button type="button" class="btn btn-link add-link" (click)="addInput()"><em
-                            class="fas fa-plus"></em>
-                        Add/Update info</button>
-                </div>
-            </div>
-        </div>
-        <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12" *ngIf="showErrorMsg">
-                <p class="error-msg">Please enter valid details before saving</p>
-            </div>
-        <div class="dxp-row">
-            <div class="dxp-col-12 dxp-col-sm-12 dxp-col-md-12 dxp-col-lg-12 dxp-col-xl-12 dxp-col-xxl-12 text-center">
-                <button type="submit" class="btn btn-sm save-btn">Save</button>
-            </div>
-        </div>
-    </form>
-</div>
+    </td>
+    <td>{{item.platformName}}</td>
+    <td>{{item.programOwner}}</td>
+    <td>{{item.bizOpsOwner}}</td>
+</tr>
