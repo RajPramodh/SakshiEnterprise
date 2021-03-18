@@ -1,35 +1,13 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div style="display:inline-block;width:100%;overflow-y:auto;">
-                <ul class="timeline timeline-horizontal">
-                    <li class="timeline-item" *ngFor="let item of data">
-                        <div class="timeline-badge primary" 
-                        [ngClass]="{
-                            'assigned': item.status=='Assigned',
-                            'inProgress': item.status=='In Progress',
-                            'pending': item.status=='Pending' ,
-                            'waitingForApproval': item.status=='Waiting approval',
-                            'completed': item.status=='Completed'}"></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h6 class="timeline-title">{{item.status}}</h6>
-                                <p *ngIf="item.status!='Completed'"><strong>Time Spent:</strong>&nbsp;&nbsp;{{item.timeSpent}} mins</p>
-                            </div>
-                            <div class="timeline-body" *ngIf="item.status!='Completed'" >
-                                <p><strong>Group Name:</strong>&nbsp;&nbsp;{{item.suport_Group}}</p>
-                                <p><strong>Assinged To:</strong>&nbsp;&nbsp;{{item.assigned_to}}</p>
-                                <p><strong>From:</strong>&nbsp;&nbsp;{{item.from_Date}}</p>
-                                <p><strong>To:</strong>&nbsp;&nbsp;{{item.to_Date}}</p>
-                            </div>
-                            <div class="timeline-body" *ngIf="item.status=='Completed'" >
-                                <p><strong>Completed on :</strong>&nbsp;&nbsp;{{item.to_Date}}</p>     
-                              </div>
+@Input() woTimeLineData: any[];
+  data: any[];
 
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+  constructor() { }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnChanges(){
+    this.data = this.woTimeLineData;
+    console.log("New Journey Received ",this.data);
+  }
