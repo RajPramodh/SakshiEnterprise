@@ -1,50 +1,32 @@
-
-<tr *ngFor="let item of data">
-    <td>
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="form-control custom-control-input" [id]="item.id"
-                (click)="onSelectRow(item, $event.target.checked)" [checked]="item.isSelected">
-            <label class="custom-control-label" [for]="item.id"></label>
-        </div>
-    </td>
-    <td>
-        <button type="button" class="btn btn-sm application-btn" name="applicationName"
-            (click)="onSelectApplication(item)">{{item.applicationName}}
-        </button>
-    </td>
-    <td>{{item.programName}}
-        <div class="application-info" *ngIf="item.showApplnInfo" [@slideInOut]>
-            <button class="btn btn-sm close-btn" type="button" (click)="closeApplnInfo(item)">
-                <em class="fas fa-times"></em>
-            </button>
-            <button type="button" *ngIf="!item.enableEditForm" class="btn btn-sm edit-btn"
-                (click)="onEditApplicationContactInfo(item)">
-                Edit
-            </button>
-             <button title="Save" type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
-                (click)="onCancelEdit(item)">
-               Cancel 
-            </button>
-            <button type="button" *ngIf="item.enableEditForm" class="btn btn-sm save-btn"
-                (click)="onSubmitApplicationContactInfo(item)">
-                Save
-            </button>
-
-            <h3 class="appln-title">{{item.applicationName}}</h3>
-            <div class="row" *ngIf="infoFormErrorMsg">
-                <div class="col-md-12">
-                  <span class="info-error">Please check and enter valid details before saving</span>
+<div class="dxp-row">
+        <div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
+            <div class="form-group required">
+                <label class="control-label">Platform</label>
+                <ngx-select-dropdown (change)="onSelectPlatform($event)" name="platformId" formControlName="platformId"
+                    [ngClass]="{ 'is-invalid': submitted && a.platformId.errors }" [options]="platformList" [config]="{
+                  displayKey: 'value',
+                  search: true,
+                  searchOnKey: 'value',
+                  placeholder:'Select Platform'}"></ngx-select-dropdown>
+                <div *ngIf="submitted && a.platformId.errors" class="invalid-feedback">
+                    <div class="error-message" *ngIf="a.platformId.errors.required">You must select one option
+                    </div>
                 </div>
             </div>
-            <div class="last-update"><span style="font-weight: 600;">Last Updated:</span>
-                {{item.lstUpdtDttm}} <strong>by</strong> {{item.lstUpdtUserId}} </div>
-
-            <pulse-contact-info [applicationRow]="item" [applicationDetails]="item.applicationDetails"
-                [contactFieldList]="contactFieldList" (submitInfo)="onSelectApplication($event)" (showError)="onShowErrorMessage($event)">
-            </pulse-contact-info>
         </div>
-    </td>
-    <td>{{item.platformName}}</td>
-    <td>{{item.programOwner}}</td>
-    <td>{{item.bizOpsOwner}}</td>
-</tr>
+        <div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
+            <div class="form-group required">
+                <label class="control-label">Application</label>
+                <ngx-select-dropdown formControlName="applicationId"
+                    [ngClass]="{ 'is-invalid': submitted && a.applicationId.errors }" [config]="{
+                displayKey: 'value',
+                search: true,
+                searchOnKey: 'value',
+                placeholder:'Select Application'}" [options]="applicationList"></ngx-select-dropdown>
+                <div *ngIf="submitted && a.applicationId.errors" class="invalid-feedback">
+                    <div class="error-message" *ngIf="a.applicationId.errors.required">You must select one option
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
