@@ -1,22 +1,35 @@
-<div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
-            <div class="form-group">
-                <label class="control-label">Display Name</label>
-                <input type="text" formControlName="displayName" class="form-control"
-                    [ngClass]="{ 'is-invalid': submitted && a.displayName.errors }" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div style="display:inline-block;width:100%;overflow-y:auto;">
+                <ul class="timeline timeline-horizontal">
+                    <li class="timeline-item" *ngFor="let item of data">
+                        <div class="timeline-badge primary" 
+                        [ngClass]="{
+                            'assigned': item.status=='Assigned',
+                            'inProgress': item.status=='In Progress',
+                            'pending': item.status=='Pending' ,
+                            'waitingForApproval': item.status=='Waiting approval',
+                            'completed': item.status=='Completed'}"></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h6 class="timeline-title">{{item.status}}</h6>
+                                <p *ngIf="item.status!='Completed'"><strong>Time Spent:</strong>&nbsp;&nbsp;{{item.timeSpent}} mins</p>
+                            </div>
+                            <div class="timeline-body" *ngIf="item.status!='Completed'" >
+                                <p><strong>Group Name:</strong>&nbsp;&nbsp;{{item.suport_Group}}</p>
+                                <p><strong>Assinged To:</strong>&nbsp;&nbsp;{{item.assigned_to}}</p>
+                                <p><strong>From:</strong>&nbsp;&nbsp;{{item.from_Date}}</p>
+                                <p><strong>To:</strong>&nbsp;&nbsp;{{item.to_Date}}</p>
+                            </div>
+                            <div class="timeline-body" *ngIf="item.status=='Completed'" >
+                                <p><strong>Completed on :</strong>&nbsp;&nbsp;{{item.to_Date}}</p>     
+                              </div>
+
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
-            <div class="form-group required">
-                <label class="control-label">Application Type</label>
-                <ngx-select-dropdown formControlName="applicationType"
-                    [ngClass]="{ 'is-invalid': submitted && a.applicationType.errors }" [config]="{
-                displayKey: 'value',
-                search: true,
-                searchOnKey: 'value',
-                placeholder:'Select Application Type'}" [options]="typeOfAppList"></ngx-select-dropdown>
-                <div *ngIf="submitted && a.applicationType.errors" class="invalid-feedback">
-                    <div class="error-message" *ngIf="a.applicationType.errors.required">You must select one option
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+</div>
