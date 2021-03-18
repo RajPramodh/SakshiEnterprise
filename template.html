@@ -1,32 +1,22 @@
-<div class="dxp-row">
-        <div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
-            <div class="form-group required">
-                <label class="control-label">Platform</label>
-                <ngx-select-dropdown (change)="onSelectPlatform($event)" name="platformId" formControlName="platformId"
-                    [ngClass]="{ 'is-invalid': submitted && a.platformId.errors }" [options]="platformList" [config]="{
-                  displayKey: 'value',
-                  search: true,
-                  searchOnKey: 'value',
-                  placeholder:'Select Platform'}"></ngx-select-dropdown>
-                <div *ngIf="submitted && a.platformId.errors" class="invalid-feedback">
-                    <div class="error-message" *ngIf="a.platformId.errors.required">You must select one option
-                    </div>
-                </div>
+<div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
+            <div class="form-group">
+                <label class="control-label">Display Name</label>
+                <input type="text" formControlName="displayName" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && a.displayName.errors }" />
             </div>
         </div>
         <div class="dxp-col-6 dxp-col-sm-12 dxp-col-md-6 dxp-col-lg-6 dxp-col-xl-6 dxp-col-xxl-6">
             <div class="form-group required">
-                <label class="control-label">Application</label>
-                <ngx-select-dropdown formControlName="applicationId"
-                    [ngClass]="{ 'is-invalid': submitted && a.applicationId.errors }" [config]="{
+                <label class="control-label">Application Type</label>
+                <ngx-select-dropdown formControlName="applicationType"
+                    [ngClass]="{ 'is-invalid': submitted && a.applicationType.errors }" [config]="{
                 displayKey: 'value',
                 search: true,
                 searchOnKey: 'value',
-                placeholder:'Select Application'}" [options]="applicationList"></ngx-select-dropdown>
-                <div *ngIf="submitted && a.applicationId.errors" class="invalid-feedback">
-                    <div class="error-message" *ngIf="a.applicationId.errors.required">You must select one option
+                placeholder:'Select Application Type'}" [options]="typeOfAppList"></ngx-select-dropdown>
+                <div *ngIf="submitted && a.applicationType.errors" class="invalid-feedback">
+                    <div class="error-message" *ngIf="a.applicationType.errors.required">You must select one option
                     </div>
                 </div>
             </div>
         </div>
-    </div>
